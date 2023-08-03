@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 
 import model.ProDAO;
 import model.ProVO;
-@WebServlet(value={"/pro/list", "/pro/list.json", "/pro/total"})
+@WebServlet(value={"/pro/list", "/pro/list.json", "/pro/total","/pro/insert","/pro/update"})
 public class ProfessorsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     ProDAO dao=new ProDAO();   
@@ -35,6 +35,7 @@ public class ProfessorsServlet extends HttpServlet {
 			request.setAttribute("pageName", "/pro/list.jsp");
 			dis.forward(request, response);
 			break;
+			
 		case "/pro/list.json":
 			String key=request.getParameter("key");
 			String query=request.getParameter("query");
@@ -46,7 +47,7 @@ public class ProfessorsServlet extends HttpServlet {
 				obj.put("pcode", vo.getPcode());
 				obj.put("pname", vo.getPname());
 				obj.put("dept", vo.getDept());
-				obj.put("hiredate", sdf.format(vo.getHiredate()));
+				obj.put("hiredate", vo.getHiredate());
 				obj.put("salary", df.format(vo.getSalary()));
 				obj.put("title", vo.getTitle());
 				jArray.add(obj);
@@ -58,11 +59,48 @@ public class ProfessorsServlet extends HttpServlet {
 			query=request.getParameter("query");
 			out.print(dao.total(query, key));
 			break;
+			
+		case "/pro/update":
+			String pcode = request.getParameter("pcode");
+			request.setAttribute("vo", dao.read(pcode));
+			request.setAttribute("pageName", "/pro/update.jsp");
+			dis.forward(request, response);
+			break;
+			
 		}
 	}
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		switch(request.getServletPath()){
+			case "/pro/insert":
+				ProVO vo = new ProVO();
+				vo.setPname(request.getParameter("pname"));
+				vo.setDept(request.getParameter("dept"));
+				vo.setSalary(Integer.parseInt(request.getParameter("salary")));
+				vo.setTitle(request.getParameter("title"));
+				vo.setHiredate(request.getParameter("hiredate"));
+				System.out.println(vo.toString());
+				dao.insert(vo);
+				break;
+				
+			case "/pro/update":
+				vo = new ProVO();
+				vo.setPcode(request.getParameter("pcode"));
+				vo.setPname(request.getParameter("pname"));
+				vo.setDept(request.getParameter("dept"));
+				vo.setSalary(Integer.parseInt(request.getParameter("salary")));
+				vo.setTitle(request.getParameter("title"));
+				vo.setHiredate(request.getParameter("hiredate"));
+				
+				System.out.println(vo.toString());
+				dao.update(vo);
+				response.sendRedirect("/pro/list");
+				break;
+				
+		}
+		
 	}
 
 }

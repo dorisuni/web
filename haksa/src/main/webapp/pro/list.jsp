@@ -15,30 +15,36 @@
 					<input type="submit" value="검색" class="btn btn-primary">
 				</div>
 			</form>
+			<div class="col text-end">
+				<button class="btn btn-primary" id="btn-insert">교수등록</button>
+			</div>
 		</div>
+		<hr>
 		<div id="div_pro"></div>
 		<div id="pagination" class="pagination justify-content-center mt-5"></div>
 	</div>
 </div>
+<!-- 교수등록 Modal -->
+<div class="modal fade" id="modal-insert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">교수등록</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <jsp:include page="/pro/insert.jsp"/>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- 교수목록 템플릿-->
 <script id="temp_pro" type="text/x-handlebars-template">
 	<table class="table">
-		<thead>
-    <tr>
-      <th scope="col">pcode</th>
-      <th scope="col">pname</th>
-      <th scope="col">dept</th>
-      <th scope="col">hiredate</th>
-	<th scope="col">title</th>
-	<th scope="col">salary</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-
 		{{#each .}}
 		<tr>
 			<td>{{pcode}}</td>
-			<td>{{pname}}</td>
+			<td><a href="/pro/update?pcode={{pcode}}">{{pname}}</a></td>
 			<td>{{dept}}</td>
 			<td>{{hiredate}}</td>
 			<td>{{title}}</td>
@@ -48,20 +54,23 @@
 	</table>
 </script>
 <script>
-	//getList(1);
 	let query="";
 	let key=$(frm.key).val();
+	let page=1;
 	
-	getTotal();
+	$("#btn-insert").on("click", function(){
+		$("#modal-insert").modal("show");	
+	});
+	
+	//getTotal();
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		key=$(frm.key).val();
 		query=$(frm.query).val();
-		//alert(key + "," + query);
-		//getList(1);
 		getTotal();
 	});
 	
+	getTotal();
 	function getTotal(){
 		$.ajax({
 			type:"get",
@@ -73,16 +82,17 @@
 				if(totalPages==0){
 					alert("검색 내용이 없습니다!");
 					$(frm.query).val("");
+					query="";
+					getTotal();
 				}else{
-					$("#pagination").show();
 					$("#pagination").twbsPagination("changeTotalPages", totalPages, 1);
-					$("#div_pro").show();
+
 				}
 			}
 		});
 	}
 	
-	function getList(page){
+	function getList(){
 		$.ajax({
 			type:"get",
 			url: "/pro/list.json",
@@ -107,8 +117,9 @@
 	    prev : '<i class="bi bi-caret-left"></i>',	// 이전 페이지 버튼에 쓰여있는 텍스트
 	    next : '<i class="bi bi-caret-right"></i>',	// 다음 페이지 버튼에 쓰여있는 텍스트
 	    last : '<i class="bi bi-skip-end"></i>',	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
-	    onPageClick: function (event, page) {
-	    	getList(page);
+	    onPageClick: function (event, clickPage) {
+	    	page=clickPage;
+	    	getList();
 	    }
 	});
 </script>

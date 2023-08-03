@@ -9,22 +9,24 @@
 						<option value="scode">학생번호</option>
 						<option value="sname" selected>학생이름</option>
 						<option value="dept">학생학과</option>
-						<option value="pname">교수이름</option>
+						<option value="title">학생직급</option>
 						<option value="year">학생학년</option>
 					</select>&nbsp;
 					<input class="form-control" placeholder="검색어" name="query">
 					<input type="submit" value="검색" class="btn btn-primary">
+					<div class="col text-end">
+			</div>
 				</div>
 			</form>
 			<div class="col text-end">
 				<button class="btn btn-primary" id="btn-insert">학생등록</button>
 			</div>
 		</div>
-		<hr>
 		<div id="div_stu"></div>
 		<div id="pagination" class="pagination justify-content-center mt-5"></div>
 	</div>
 </div>
+
 <!-- 학생등록 Modal -->
 <div class="modal fade" id="modal-insert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -34,44 +36,58 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <jsp:include page="insert.jsp"/>
+        <jsp:include page="/stu/insert.jsp"/>
       </div>
     </div>
   </div>
 </div>
+
+
+
 <!-- 학생목록 템플릿-->
 <script id="temp_stu" type="text/x-handlebars-template">
 	<table class="table">
+		<thead>
+    <tr>
+      <th scope="col">scode</th>
+	<th scope="col">year</th>
+      <th scope="col">sname</th>
+      <th scope="col">dept</th>
+	<th scope="col">advisor</th>
+	<th scope="col">birthday</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+
 		{{#each .}}
-		<tr class="stu" style="cursor:pointer;" scode="{{scode}}">
+		<tr>
 			<td>{{scode}}</td>
+			<td>{{year}}</td>
 			<td>{{sname}}</td>
 			<td>{{dept}}</td>
+			<td>{{pname}}</td>
 			<td>{{birthday}}</td>
-			<td>{{year}}</td>
-			<td>{{pname}}({{advisor}})</td>
 		</tr>
 		{{/each}}
 	</table>
 </script>
 <script>
+	$("#btn-insert").on("click",function(){
+		$("#modal-insert").modal("show");
+	})
+
+
+	//getList(1);
 	let query="";
 	let key=$(frm.key).val();
-	
-	$("#div_stu").on("click", ".stu", function(){
-		const scode=$(this).attr("scode");
-		location.href="/stu/update?scode=" + scode;
-	});
-	
-	$("#btn-insert").on("click", function(){
-		$("#modal-insert").modal("show");	
-	});
 	
 	getTotal();
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		key=$(frm.key).val();
 		query=$(frm.query).val();
+		//alert(key + "," + query);
+		//getList(1);
 		getTotal();
 	});
 	
@@ -86,10 +102,10 @@
 				if(totalPages==0){
 					alert("검색 내용이 없습니다!");
 					$(frm.query).val("");
-					qeury="";
-					getTotal();
 				}else{
+					$("#pagination").show();
 					$("#pagination").twbsPagination("changeTotalPages", totalPages, 1);
+					$("#div_stu").show();
 				}
 			}
 		});

@@ -8,7 +8,7 @@ public class ProDAO {
 	public ArrayList<ProVO> all(){
 		ArrayList<ProVO> array=new ArrayList<ProVO>();
 		try {
-			String sql="select * from professors order by pname asc";
+			String sql="select * professors order by pname asc";
 			PreparedStatement ps = Database.CON.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
@@ -19,10 +19,8 @@ public class ProDAO {
 				vo.setHiredate(rs.getString("hiredate"));
 				vo.setTitle(rs.getString("title"));
 				vo.setSalary(rs.getInt("salary"));
-				array.add(vo);
+
 			}
-			
-			
 		}catch(Exception e) {
 			System.out.println("교수목록"+e.toString());
 		}
