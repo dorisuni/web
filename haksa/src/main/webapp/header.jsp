@@ -2,7 +2,7 @@
 <div class="row">
 	<div class="col">
 		<img src="/image/header01.png" width="100%" id="img_header">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+		<nav class="navbar bg-primary" data-bs-theme="dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="/">학사관리</a>
 				<button class="navbar-toggler" type="button"

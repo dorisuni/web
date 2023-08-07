@@ -3,12 +3,68 @@ import java.sql.*;
 import java.util.*;
 
 public class StuDAO {
+	//수강취소
+	public void delete(String scode, String lcode) {
+		try {
+			String sql="call del_enroll(?, ?)";
+			CallableStatement cs=Database.CON.prepareCall(sql);
+			cs.setString(1, scode);
+			cs.setString(2, lcode);
+			cs.execute();
+		}catch(Exception e) {
+			System.out.println("수강신청취소:" + e.toString());
+		}
+	}
+	
+	//수강신청등록
+	public int insert(String scode, String lcode) {
+		int count=-1;
+		try {
+			String sql="call add_enroll(?, ?, ?)";
+			CallableStatement cs=Database.CON.prepareCall(sql);
+			cs.setString(1, scode);
+			cs.setString(2, lcode);
+			cs.registerOutParameter(3, java.sql.Types.INTEGER);
+			cs.execute();
+			count=cs.getInt(3);
+		}catch(Exception e) {
+			System.out.println("수강신청등록:" + e.toString());
+		}
+		return count;
+	}
+	
+	//수강신청목록
+	public ArrayList<EnrollVO> list(String scode){
+		ArrayList<EnrollVO> array=new ArrayList<EnrollVO>();
+		try {
+			String sql="select * from view_enroll_cou where scode=?";
+			PreparedStatement ps=Database.CON.prepareStatement(sql);
+			ps.setString(1, scode);
+			ResultSet rs=ps.executeQuery();
+			while(rs.next()) {
+				EnrollVO vo=new EnrollVO();
+				vo.setLcode(rs.getString("lcode"));
+				vo.setLname(rs.getString("lname"));
+				vo.setEdate(rs.getString("edate"));
+				vo.setGrade(rs.getInt("grade"));
+				vo.setCapacity(rs.getInt("capacity"));
+				vo.setPersons(rs.getInt("persons"));
+				vo.setRoom(rs.getString("room"));
+				vo.setHours(rs.getInt("hours"));
+				vo.setPname(rs.getString("pname"));
+				array.add(vo);
+			}
+		}catch(Exception e) {
+			System.out.println("수강신청목록:" + e.toString());
+		}
+		return array;
+	}
 	
 	//학생수정
 	public void update(StuVO vo) {
 		try {
-			String sql= "update students set sname=?,dept=?,year=?,birthday=?,advisor=? where scode = ?";
-			PreparedStatement ps =Database.CON.prepareStatement(sql);
+			String sql="update students set sname=?,dept=?,year=?,birthday=?,advisor=? where scode=?";
+			PreparedStatement ps=Database.CON.prepareStatement(sql);
 			ps.setString(1, vo.getSname());
 			ps.setString(2, vo.getDept());
 			ps.setInt(3, vo.getYear());
@@ -21,12 +77,11 @@ public class StuDAO {
 		}
 	}
 	
-	
 	//학생정보
 	public StuVO read(String scode) {
-		StuVO vo = new StuVO();
+		StuVO vo=new StuVO();
 		try {
-			String  sql= " select * from view_stu where scode = ? ";
+			String  sql= " select * from view_stu where scode=?";
 			PreparedStatement ps=Database.CON.prepareStatement(sql);
 			ps.setString(1, scode);
 			ResultSet rs=ps.executeQuery();
@@ -42,10 +97,8 @@ public class StuDAO {
 		}catch(Exception e) {
 			System.out.println("학생정보:" + e.toString());
 		}
-		
 		return vo;
 	}
-	
 	
 	//학생등록
 	public void insert(StuVO vo) {
