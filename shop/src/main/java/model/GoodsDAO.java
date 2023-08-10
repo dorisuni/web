@@ -9,6 +9,7 @@ import javax.xml.crypto.Data;
 
 public class GoodsDAO {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+<<<<<<< HEAD
 	//상품정보 수정
 	public void update(GoodsVO vo) {
 		try {
@@ -54,6 +55,9 @@ public class GoodsDAO {
 	
 	
 	
+=======
+
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 	// 상품 삭제하기
 
 	public void delete(String gid) {

@@ -16,15 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+<<<<<<< HEAD
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+=======
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 
 import model.GoodsDAO;
 import model.GoodsVO;
 import model.NaverAPI;
 
 
+<<<<<<< HEAD
 @WebServlet(value={"/goods/search","/goods/search.json","/goods/read","/goods/append","/goods/list.json","/goods/total","/goods/list","/goods/delete","/goods/insert","/goods/update"})
+=======
+@WebServlet(value={"/goods/search","/goods/search.json","/goods/append","/goods/list.json","/goods/total","/goods/list","/goods/delete"})
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 public class GoodsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     GoodsDAO gdao=new GoodsDAO(); 
@@ -63,6 +70,7 @@ public class GoodsController extends HttpServlet {
 			dis.forward(request, response);
 			break;
 			
+<<<<<<< HEAD
 		case "/goods/insert":
 			request.setAttribute("pageName", "/goods/insert.jsp");
 			dis.forward(request, response);
@@ -77,6 +85,9 @@ public class GoodsController extends HttpServlet {
 			request.setAttribute("pageName", "/goods/read.jsp");
 			dis.forward(request,response);
 			break;
+=======
+			
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 		}
 	}
 
@@ -123,6 +134,7 @@ public class GoodsController extends HttpServlet {
 			}catch(Exception e) {
 				System.out.println("상품삭제오류:"+e.toString());
 			}
+<<<<<<< HEAD
 			break;
 		case "/goods/insert":
 			MultipartRequest multi = new MultipartRequest(request, "c:"+path, 1024*1024*10,"UTF-8",new DefaultFileRenamePolicy());
@@ -153,6 +165,12 @@ public class GoodsController extends HttpServlet {
 			gdao.update(vo);
 			response.sendRedirect("/goods/list");
 			break;
+=======
+			
+			
+			break;
+			
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 		}
 	}
 

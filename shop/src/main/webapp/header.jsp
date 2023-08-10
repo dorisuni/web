@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<<<<<<< HEAD
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+=======
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 <div class="row">
 	<div class="col">
 		<img src="/image/hanbit.png" width="100%" id="img_header">
@@ -20,6 +23,7 @@
 						<li class="nav-item">
 							<a class="nav-link active" aria-current="page" href="/goods/list">상품목록</a>
 						</li>
+<<<<<<< HEAD
 						<li class="nav-item">
 							<a class="nav-link active" aria-current="page" href="/user/list">회원목록</a>
 						</li>
@@ -42,6 +46,10 @@
 							</li>
 						</c:if>
 					</ul>		
+=======
+						
+					</ul>
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 				</div>
 			</div>
 		</nav>

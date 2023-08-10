@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="row my-5">
 	<div class="col">
@@ -8,10 +9,19 @@
 					<button class="btn btn-primary">상품등록</button>
 				</a>
 			</div>
+=======
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<div class="row my-5">
+	<div class="col">
+		<h1 class="text-center">상품목록</h1>
+		<div class="row justify-content-end mb-3">
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 			<form name="frm" class="col-4">
 				<div class="input-group">
 					<input name="query" class="form-control" value="">
 					<button class="btn btn-primary">검색</button>
+<<<<<<< HEAD
 				</div>	 
 			</form>
 		</div>
@@ -35,21 +45,84 @@
 	{{/each}}
 	</table>
 </script>
+=======
+				</div>
+			</form>
+		</div>
+
+		<div id="div_goods"></div>
+		<div id="pagination" class="pagination justify-content-center mt-5"></div>
+
+	</div>
+</div>
+
+<!-- 상품목록 탬플릿 -->
+<script id="temp_goods" type="x-handlebars/template">
+	<table class= "table">	
+	{{#each .}}
+		<tr>
+			<td class="gid">{{gid}}</td>
+			<td><img class="img" src = "{{image}}" width="50px"></td>
+			<td><div class="ellipsis">{{title}}</td>
+			<td>{{fmtPrice price}}</td>
+			<td>{{maker}}</td>
+			<td><button class="btn btn-danger" gid="{{gid}}" image="{{image}}">삭제</button><td>
+        </tr>
+	{{/each}}
+</script>
+
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 <script>
 	Handlebars.registerHelper("fmtPrice", function(price){
 		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
 	});
 </script>
+<<<<<<< HEAD
 <script>
 	let page=1;
 	let query="";
 	
+=======
+
+
+
+<script>
+	let page = 1;
+	let query = "";
+	getList();
+	
+	//삭제버튼을 누른 경우
+	$("#div_goods").on("click",".btn-danger",function(){
+		const image = $(this).attr("image");
+		const gid = $(this).attr("gid");
+		if(confirm("해당 상품을 삭제할까요?")){
+			$.ajax({
+				type:"post",
+				url:"/goods/delete",
+				data:{gid:gid,image:image},
+				success:function(){
+					alert("상품이 삭제되었습니다.");
+					getTotal();
+				}
+			});
+		}
+			
+		//alert(image + "," + gid);
+		
+	});
+	
+	
+	
+	
+	//검색버튼을 눌렀을 떄
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		query=$(frm.query).val();
 		getTotal();
 	});
 	
+<<<<<<< HEAD
 	//삭제버튼을 클릭한경우
 	$("#div_goods").on("click", ".btn-danger", function(){
 			const image=$(this).attr("image");
@@ -66,6 +139,8 @@
 				});
 			}
 	});
+=======
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 	
 	getTotal();
 	function getTotal(){
@@ -74,10 +149,16 @@
 			url:"/goods/total",
 			data:{query:query},
 			success:function(data){
+<<<<<<< HEAD
 				const totalPages=Math.ceil(data/6);
 				if(totalPages==0){
 					alert("검색내용이 존재하지않습니다.");
 					$(frm.query).val("");
+=======
+				const totalPages= Math.ceil(data/6);
+				if(totalPages==0){
+					alert("검색내용이 존재하지 않습니다.")
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 					query="";
 					getTotal();
 				}else{
@@ -87,6 +168,10 @@
 		});
 	}
 	
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 	function getList(){
 		$.ajax({
 			type:"get",
@@ -96,9 +181,17 @@
 			success:function(data){
 				console.log(data);
 				const temp=Handlebars.compile($("#temp_goods").html());
+<<<<<<< HEAD
 				$("#div_goods").html(temp(data));
 			}
 		});
+=======
+				const html=temp(data);
+				$("#div_goods").html(html);
+			}
+		});
+		
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 	}
 	
 	$('#pagination').twbsPagination({
@@ -115,4 +208,9 @@
 	    	getList();
 	    }
 	});
+<<<<<<< HEAD
+=======
+	    
+	    
+>>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 </script>
