@@ -16,22 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-<<<<<<< HEAD
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
-=======
->>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 
 import model.GoodsDAO;
 import model.GoodsVO;
 import model.NaverAPI;
 
 
-<<<<<<< HEAD
-@WebServlet(value={"/goods/search","/goods/search.json","/goods/read","/goods/append","/goods/list.json","/goods/total","/goods/list","/goods/delete","/goods/insert","/goods/update"})
-=======
-@WebServlet(value={"/goods/search","/goods/search.json","/goods/append","/goods/list.json","/goods/total","/goods/list","/goods/delete"})
->>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
+@WebServlet(value={"/goods/search","/goods/search.json","/goods/append","/goods/list.json",
+		"/goods/total", "/goods/list", "/goods/delete", "/goods/insert", "/goods/update",
+		"/goods/read"})
 public class GoodsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     GoodsDAO gdao=new GoodsDAO(); 
@@ -52,25 +47,20 @@ public class GoodsController extends HttpServlet {
 			String result=NaverAPI.search(page, query);
 			out.println(result);
 			break;
-			
-		case "/goods/list.json": // /goods/list.json?page=1&query=
-			page = Integer.parseInt(request.getParameter("page"));
-			query = request.getParameter("query");
-			Gson gson = new Gson();
+		case "/goods/list.json": //실행: /goods/list.json?page=1&query= 
+			page=Integer.parseInt(request.getParameter("page"));
+			query=request.getParameter("query");
+			Gson gson=new Gson();
 			out.print(gson.toJson(gdao.list(query, page)));
-			
 			break;
 		case "/goods/total":
-			query= request.getParameter("query");
+			query=request.getParameter("query");
 			out.print(gdao.total(query));
 			break;
-			
 		case "/goods/list":
 			request.setAttribute("pageName", "/goods/list.jsp");
 			dis.forward(request, response);
 			break;
-			
-<<<<<<< HEAD
 		case "/goods/insert":
 			request.setAttribute("pageName", "/goods/insert.jsp");
 			dis.forward(request, response);
@@ -78,39 +68,36 @@ public class GoodsController extends HttpServlet {
 		case "/goods/update":
 			request.setAttribute("vo", gdao.read(request.getParameter("gid")));
 			request.setAttribute("pageName", "/goods/update.jsp");
-			dis.forward(request,response);
+			dis.forward(request, response);
 			break;
 		case "/goods/read":
 			request.setAttribute("vo", gdao.read(request.getParameter("gid")));
 			request.setAttribute("pageName", "/goods/read.jsp");
-			dis.forward(request,response);
+			dis.forward(request, response);
 			break;
-=======
-			
->>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 		}
 	}
 
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path="/upload/goods/";
+		File mdPath=new File("c:" + path);
+		if(!mdPath.exists()) mdPath.mkdir();
+		
 		switch(request.getServletPath()) {
 		case "/goods/append":
-			InputStream is=null;
-			FileOutputStream fos=null;
 			try {
-				URL url=new URL(request.getParameter("image"));
-				is=url.openStream();
-				
+				//이미지저장
 				UUID uuid=UUID.randomUUID();
 				String gid=uuid.toString().substring(0,8);
+				URL url=new URL(request.getParameter("image"));
+				InputStream is=url.openStream();
 				String fileName = gid + ".jpg";
-				fos=new FileOutputStream("c:/" + path + fileName);
+				FileOutputStream fos=new FileOutputStream("c:/" + path + fileName);
 				int data=0;
 				while((data=is.read()) != -1) {
 					fos.write(data);
 				}
-				
+				//데이터저장
 				GoodsVO vo=new GoodsVO();
 				vo.setGid(gid);
 				vo.setTitle(request.getParameter("title"));
@@ -123,27 +110,27 @@ public class GoodsController extends HttpServlet {
 				System.out.println("상품이미지저장:" + e.toString());
 			}
 			break;
-			
 		case "/goods/delete":
 			try {
-				String gid = request.getParameter("gid");
-				String image = request.getParameter("image");
-				File file = new File("c:/"+image);
-				file.delete(); //이미지삭제
-				gdao.delete(gid); //테이블삭제
+				String gid=request.getParameter("gid");
+				String image=request.getParameter("image");
+				File file=new File("c:/" + image);
+				file.delete(); //이미지파일삭제
+				gdao.delete(gid); //데이터삭제
 			}catch(Exception e) {
-				System.out.println("상품삭제오류:"+e.toString());
+				System.out.println("상품삭제:" + e.toString());
 			}
-<<<<<<< HEAD
 			break;
 		case "/goods/insert":
-			MultipartRequest multi = new MultipartRequest(request, "c:"+path, 1024*1024*10,"UTF-8",new DefaultFileRenamePolicy());
-			String image = multi.getFilesystemName("image");
-			GoodsVO vo = new GoodsVO();
-			UUID uuid =UUID.randomUUID();
-			String gid = uuid.toString().substring(0,8);
+			MultipartRequest multi=new MultipartRequest(
+					request, "c:"+path, 1024*1024*10,"UTF-8", new DefaultFileRenamePolicy());
+			String image=path + multi.getFilesystemName("image");
+			
+			GoodsVO vo=new GoodsVO();
+			UUID uuid=UUID.randomUUID();
+			String gid=uuid.toString().substring(0,8);
 			vo.setGid(gid);
-			vo.setImage(path+image);
+			vo.setImage(image);
 			vo.setTitle(multi.getParameter("title"));
 			vo.setMaker(multi.getParameter("maker"));
 			vo.setPrice(Integer.parseInt(multi.getParameter("price")));
@@ -151,12 +138,12 @@ public class GoodsController extends HttpServlet {
 			gdao.insert(vo);
 			response.sendRedirect("/goods/list");
 			break;
-			
 		case "/goods/update":
-			multi = new MultipartRequest(request, "c:"+path, 1024*1024*10,"UTF-8",new DefaultFileRenamePolicy());
-			image = multi.getFilesystemName("image")==null?
+			multi=new MultipartRequest(
+					request, "c:"+path, 1024*1024*10,"UTF-8", new DefaultFileRenamePolicy());
+			image=multi.getFilesystemName("image")==null?
 					multi.getParameter("oldImage") : path + multi.getFilesystemName("image");
-			vo = new GoodsVO();
+			vo=new GoodsVO();
 			vo.setGid(multi.getParameter("gid"));
 			vo.setImage(image);
 			vo.setTitle(multi.getParameter("title"));
@@ -165,12 +152,6 @@ public class GoodsController extends HttpServlet {
 			gdao.update(vo);
 			response.sendRedirect("/goods/list");
 			break;
-=======
-			
-			
-			break;
-			
->>>>>>> 0f9b6db6cc413c7e1dc48fd5ce04cfd353c3fdf5
 		}
 	}
 

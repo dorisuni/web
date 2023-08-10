@@ -7,7 +7,7 @@
 			<div class="col-md-5 m-2 text-center">
 				<img src="${vo.image}" width="90%">
 			</div>
-			<div class="col card m-2 p-3">
+			<div class="col card m-2 p-5">
 				<h5>상품코드: ${vo.gid}</h5>
 				<h5>상품이름: ${vo.title}</h5>
 				<hr>

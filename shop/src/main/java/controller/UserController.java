@@ -21,17 +21,17 @@ import model.UserDAO;
 import model.UserVO;
 
 
-@WebServlet(value= {"/user/login", "/user/logout", "/user/read", "/user/insert","/user/update",
-		"/user/list.json","/user/list"})
+@WebServlet(value= {"/user/login", "/user/logout", "/user/read", "/user/insert", "/user/update",
+					"/user/list.json", "/user/list"})
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     UserDAO dao=new UserDAO();
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession();
-		RequestDispatcher dis=request.getRequestDispatcher("/home.jsp");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out=response.getWriter();
+		HttpSession session=request.getSession();
+		RequestDispatcher dis=request.getRequestDispatcher("/home.jsp");
 		switch(request.getServletPath()){
 		case "/user/login":
 			String target=request.getParameter("target")==null?
@@ -54,11 +54,11 @@ public class UserController extends HttpServlet {
 			request.setAttribute("pageName","/user/insert.jsp");
 			dis.forward(request, response);
 			break;
-		case "/user/list.json": //실행방법 /user/list.json?page=1&key=uid&query=
-			String key = request.getParameter("key");
-			String query = request.getParameter("query");
-			int page= Integer.parseInt(request.getParameter("page"));
-			ArrayList<UserVO> array = dao.list(key, query, page);
+		case "/user/list.json": //실행 /user/list.json?page=1&key=uid&query=
+			String key=request.getParameter("key");
+			String query=request.getParameter("query");
+			int page=Integer.parseInt(request.getParameter("page"));
+			ArrayList<UserVO> array=dao.list(key, query, page);
 			Gson gson=new Gson();
 			out.print(gson.toJson(array));
 			break;
@@ -73,6 +73,11 @@ public class UserController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		PrintWriter out=response.getWriter();
 		HttpSession session=request.getSession();
+		
+		//폴더생성
+		String path="/upload/photo/";
+		File mdPath=new File("c:" + path);
+		if(!mdPath.exists()) mdPath.mkdir();
 		
 		switch(request.getServletPath()) {
 		case "/user/login":
@@ -92,11 +97,6 @@ public class UserController extends HttpServlet {
 			out.println(result);
 			break;
 		case  "/user/insert":
-			//폴더생성
-			String path="/upload/photo/";
-			File mdPath=new File("c:" + path);
-			if(!mdPath.exists()) mdPath.mkdir();
-			
 			//사진저장
 			MultipartRequest multi=new MultipartRequest(
 					request, "c:"+path, 1024*1024*10,"UTF-8", new DefaultFileRenamePolicy());
@@ -117,20 +117,13 @@ public class UserController extends HttpServlet {
 			response.sendRedirect("/user/login");
 			break;
 		case "/user/update":
-			//폴더생성
-			path="/upload/photo/";
-			mdPath=new File("c:" + path);
-			if(!mdPath.exists()) mdPath.mkdir();
-			
 			//사진저장
 			multi=new MultipartRequest(
 					request, "c:"+path, 1024*1024*10,"UTF-8", new DefaultFileRenamePolicy());
 			photo = multi.getFilesystemName("photo")==null ? multi.getParameter("oldPhoto"):
 					path + multi.getFilesystemName("photo");
-			//데이터저장
 			vo=new UserVO();
 			vo.setUid(multi.getParameter("uid"));
-			vo.setUpass(multi.getParameter("upass"));
 			vo.setUname(multi.getParameter("uname"));
 			vo.setPhone(multi.getParameter("phone"));
 			vo.setAddress1(multi.getParameter("address1"));
@@ -139,8 +132,6 @@ public class UserController extends HttpServlet {
 			dao.update(vo);
 			response.sendRedirect("/user/read");
 			break;
-			
-			
 		}
 		
 	}

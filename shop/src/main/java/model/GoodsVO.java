@@ -48,6 +48,4 @@ public class GoodsVO {
 		return "GoodsVO [gid=" + gid + ", title=" + title + ", price=" + price + ", image=" + image + ", regDate="
 				+ regDate + ", maker=" + maker + "]";
 	}
-	
-	
 }

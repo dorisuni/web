@@ -5,9 +5,6 @@
 		justify-content: center;
 	}
 </style>
-
-
-
 <div class="row my-5" id="page_order" style="display:none;">
 	<div class="col">
 		<h1 class="text-center mb-5">주문하기</h1>
@@ -16,23 +13,22 @@
 		<form name="frm" class="card p-3">
 			<div class="input-group mb-3">
 				<span class="input-group-text">주문자명</span>
-				<input name="phone" class="form-control" value="${user.uname}">
-			</div>	
-				
-			<div class="input-group mb-3">	
-				<span class="input-group-text">주문자전화번호</span>
-				<input class="form-control" value="${user.phone}">
+				<input class="form-control" value="${user.uname}">
 			</div>
-			<div class="input-group mb-3">	
-				<span class="input-group-text">주문주소</span>
+			<div class="input-group mb-3">
+				<span class="input-group-text">주문자전화</span>
+				<input name="phone" class="form-control" value="${user.phone}">
+			</div>
+			<div class="input-group mb-3">
+				<span class="input-group-text">주문자주소</span>
 				<input name="address1" class="form-control" value="${user.address1}">
 				<a class="btn btn-primary" id="btn-search">주소검색</a>
 			</div>
-			<div class="input-group mb-3">	
+			<div class="input-group mb-3">
 				<span class="input-group-text">상세주소</span>
 				<input name="address2" class="form-control" value="${user.address2}">
 			</div>
-			<input name="sum" type="hidden">	
+			<input name="sum" type="hidden">
 			<div class="text-center my-3">
 				<button class="btn btn-primary px-5">주문하기</button>
 			</div>
@@ -46,21 +42,20 @@
 			<tr class="tr" price="{{price}}" qnt="{{qnt}}">
 				<td>{{gid}}</td>
 				<td><img src="{{image}}" width="50px"></td>
-				<td>{{title}}</td>
+				<td class="text-truncate" style="max-width:200px;">{{title}}</td>
 				<td>{{sum price 1}}</td>
 				<td>{{qnt}}</td>
 				<td>{{sum price qnt}}</td>
 			</tr>
 		{{/each}}
 		<tr>
-			<td colspan="6" class="text-end">
-				<h5>총합계: <span id="orderSum">0원</span></h5>
+			<td colspan="6" class="text-end pt-3">
+				<h5>총합계: <span id="osum">0원</span></h5>
 			</td>
 		</tr>
 	</table>
 </script>
 <script>
-	
 	//주문하기 버튼을 클릭한경우
 	$(frm).on("submit", function(e){
 		e.preventDefault();
@@ -81,23 +76,21 @@
 			});
 		}
 	});
-
-
-
-	//주소검색버튼을 누른 경우
-	$("#btn-search").on("click",function(){
+	
+	//주소검색 버튼을 클릭한 경우
+	$("#btn-search").on("click", function(){
 		new daum.Postcode({
-			oncomplete:function(data){
+			oncomplete: function(data){
 				console.log(data);
 				if(data.buildingName!=""){
 					$(frm.address1).val(data.address + " " + data.buildingName);
 				}else{
 					$(frm.address1).val(data.address);
 				}
-				
 			}
-		}).open();
+		}).open();	
 	});
+	
 	function getOrder(data){
 		const temp=Handlebars.compile($("#temp_order").html());
 		$("#div_order").html(temp(data));
@@ -112,6 +105,6 @@
 			sum += price*qnt;
 		});
 		$(frm.sum).val(sum);
-		$("#orderSum").html(sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+		$("#osum").html(sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 	}
 </script>

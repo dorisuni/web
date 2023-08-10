@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
-
 <style>
 	span{
 		width: 150px;
@@ -10,7 +7,7 @@
 	#image {
 		border-radius:50%;
 		cursor:pointer;
-		border:2px solid gray;
+		border: 2px solid gray;
 	}
 </style>
 <div class="row my-5">
@@ -59,37 +56,6 @@
 </div>
 <script>
 	let check=false;
-	
-	//주소검색버튼을 누른 경우
-	
-	$("#btn-search").on("click",function(){
-		new daum.Postcode({
-			oncomplete:function(data){
-				console.log(data);
-				if(data.buildingName!=""){
-					$(frm.address1).val(data.address + " " + data.buildingName);
-				}else{
-					$(frm.address1).val(data.address);
-				}
-				
-			}
-		}).open();
-	});
-	
-	
-	//이미지 파일을 선택한 경우 (미리보기)
-	$(frm.photo).on("change",function(e){
-		$("#image").attr("src",URL.createObjectURL(e.target.files[0]));
-	});
-	
-	
-	//이미지를 클릭한 경우
-	
-	$("#image").on("click",function(){
-		$(frm.photo).click();
-	});
-	
-	
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		const uid=$(frm.uid).val();
@@ -101,15 +67,39 @@
 		}else if(check==false){
 			alert("아이디 중복 체크해주세요!");
 		}else if(upass==""){
-			alert("비밀번호를 입력하세요!");
+			alert("비밀 번호를 입력하세요!");
 			$(frm.upass).focus();
 		}else if(uname==""){
 			alert("이름을 입력하세요!");
 			$(frm.uname).focus();
 		}else{
 			if(confirm("회원가입을 하실래요?")) frm.submit();
-		}	
+		}
 	});	
+	
+	//주소검색 버튼을 클릭한 경우
+	$("#btn-search").on("click", function(){
+		new daum.Postcode({
+			oncomplete: function(data){
+				console.log(data);
+				if(data.buildingName!=""){
+					$(frm.address1).val(data.address + " " + data.buildingName);
+				}else{
+					$(frm.address1).val(data.address);
+				}
+			}
+		}).open();	
+	});
+	
+	//이미지를 클릭한 경우
+	$("#image").on("click", function(){
+		$(frm.photo).click();	
+	});
+	
+	//이미지파일을 선택한경우
+	$(frm.photo).on("change", function(e){
+		$("#image").attr("src", URL.createObjectURL(e.target.files[0]));	
+	});
 	
 	$("#btn-check").on("click", function(){
 		const uid=$(frm.uid).val();

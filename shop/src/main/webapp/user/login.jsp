@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="row my-5 justify-content-center">
-	<div class="col-md-6 my-5">
+	<div class="col-md-8 col-lg-6 my-5">
 		<h1 class="text-center mb-5">로그인</h1>
 		<form name="frm" class="card p-3">
 			<input name="uid" class="form-control mb-3" placeholder="아이디" value="blue">
@@ -10,14 +9,11 @@
 			<div class="text-end mt-3">
 				<a href="/user/insert">회원가입</a>
 			</div>
-			
 		</form>
 	</div>
 </div>
-
-
 <script>
-	const target = "${target}";
+	const target="${target}";
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		const uid=$(frm.uid).val();
@@ -32,19 +28,20 @@
 				success:function(data){
 					if(data==0) {
 						alert("아이디가 존재하지 않습니다!");
+						$(frm.uid).focus();
 					}else if(data==2){
 						alert("비밀번호가 일치하지 않습니다!");
+						$(frm.upass).focus();
 					}else{
-						alert("로그인 성공!")
+						alert("로그인에 성공하였습니다!");
 						if(target==""){
 							location.href="/";
 						}else{
 							location.href=target;
 						}
-						
 					}
 				}
-			});	
-		}	
+			});
+		}
 	});
 </script>

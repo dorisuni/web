@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <style>
 	span{
@@ -34,7 +33,7 @@
 					</div>
 					<div class="input-group mb-3">
 						<span class="input-group-text">비밀번호</span>
-						<input name="upass" type="password" class="form-control" value="****" readonly>
+						<input name="upass" type="password" class="form-control" readonly>
 					</div>
 					<div class="input-group mb-3">
 						<span class="input-group-text">회 원 명</span>
@@ -56,58 +55,44 @@
 				<input name="address2" class="form-control" value="${vo.address2}">
 			</div>
 			<div class="text-center my-3">
-				<button class="btn btn-primary">정보수정</button>
+				<button class="btn btn-primary px-5">정보수정</button>
 			</div>
-			
 		</form>
 	</div>
 </div>
-
 <script>
-
-	//주소검색버튼을 누른 경우
-	
-	$("#btn-search").on("click",function(){
-		new daum.Postcode({
-			oncomplete:function(data){
-				console.log(data);
-				if(data.buildingName!=""){
-					$(frm.address1).val(data.address + " " + data.buildingName);
-				}else{
-					$(frm.address1).val(data.address);
-				}
-				
-			}
-		}).open();
-	});
-
-
-	//이미지 파일을 선택한 경우 (미리보기)
-	$(frm.photo).on("change",function(e){
-		$("#image").attr("src",URL.createObjectURL(e.target.files[0]));
-	});
-	
-	
-	//이미지를 클릭한 경우
-	
-	$("#image").on("click",function(){
-		$(frm.photo).click();
-	});
-
-
-
-
 	$(frm).on("submit", function(e){
 		e.preventDefault();
-		const upass=$(frm.upass).val();
 		const uname=$(frm.uname).val();
 		if(uname==""){
 			alert("이름을 입력하세요!");
 			$(frm.uname).focus();
 		}else{
 			if(confirm("회원정보를 수정하실래요?")) frm.submit();
-		}	
+		}
 	});	
-
-
+	
+	//이미지를 클릭한 경우
+	$("#image").on("click", function(){
+		$(frm.photo).click();	
+	});
+	
+	//이미지파일을 선택한경우
+	$(frm.photo).on("change", function(e){
+		$("#image").attr("src", URL.createObjectURL(e.target.files[0]));	
+	});
+	
+	//주소검색 버튼을 클릭한 경우
+	$("#btn-search").on("click", function(){
+		new daum.Postcode({
+			oncomplete: function(data){
+				console.log(data);
+				if(data.buildingName!=""){
+					$(frm.address1).val(data.address + " " + data.buildingName);
+				}else{
+					$(frm.address1).val(data.address);
+				}
+			}
+		}).open();	
+	});
 </script>

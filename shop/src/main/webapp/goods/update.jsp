@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="row my-5">
 	<div class="col">
-		<h1 class="text-center mb-5">상품수정</h1> 
-		<form name="frm" class="card p-3" method="post" enctype="multipart/form-data"> <!--  파일까지 넘겨줘야할 경우 -->
+		<h1 class="text-center mb-5">상품정보수정</h1>
+		<form name="frm" class="card p-3" method="post" enctype="multipart/form-data">
 			<div class="input-group mb-3">
 				<span class="input-group-text">상품코드</span>
 				<input name="gid" class="form-control" value="${vo.gid}" readonly>
@@ -21,7 +21,7 @@
 			</div>
 			<div class="input-group mb-3">
 				<input name="image" type="file" class="form-control" accept="image/*">
-				<input name = "oldImage" value="${vo.image}" type="hidden">
+				<input name="oldImage" value="${vo.image}" type="hidden">
 			</div>
 			<div>
 				<img src="${vo.image}" width="50%" id="image">
@@ -35,16 +35,14 @@
 	</div>
 </div>
 <script>
-	const oldImage = ${vo.image};
-
-
+	const oldImage="${vo.image}";
+	
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		const title=$(frm.title).val();
 		const price=$(frm.price).val();
-		
 		if(title=="" || price=="") {
-			alert("상품이름,상품가격을 입력하세요!");
+			alert("상품이름,상품가격를 입력하세요!");
 			$(frm.title).focus();
 		}else{
 			if(confirm("상품정보를 수정하실래요?")){
