@@ -11,7 +11,15 @@ public class UserVO {
 	private String address2;
 	private Date regDate;
 	private String photo;
+	private int role;
 	
+	public void setRole(int role) {
+		this.role = role;
+	}
+	
+	public int getRole() {
+		return role;
+	}
 	public String getUid() {
 		return uid;
 	}
@@ -65,5 +73,4 @@ public class UserVO {
 		return "UserVO [uid=" + uid + ", upass=" + upass + ", uname=" + uname + ", phone=" + phone + ", address1="
 				+ address1 + ", address2=" + address2 + ", regDate=" + regDate + ", photo=" + photo + "]";
 	}
-	
 }

@@ -39,7 +39,7 @@
 <script id="temp_order" type="x-handlebar-template">
 	<table class="table">
 		{{#each .}}
-			<tr class="tr" price="{{price}}" qnt="{{qnt}}">
+			<tr class="tr" price="{{price}}" qnt="{{qnt}}" gid="{{gid}}">
 				<td>{{gid}}</td>
 				<td><img src="{{image}}" width="50px"></td>
 				<td class="text-truncate" style="max-width:200px;">{{title}}</td>
@@ -71,7 +71,29 @@
 					phone:$(frm.phone).val(),
 					sum:$(frm.sum).val()},
 				success:function(data){
-					alert(data);
+					//주문상품등록
+					const pid=data;
+					$("#div_order .tr").each(function(){
+						const gid=$(this).attr("gid");
+						const qnt=$(this).attr("qnt");
+						const price=$(this).attr("price");
+						$.ajax({
+							type:"post",
+							url:"/order/insert",
+							data:{pid:pid, gid:gid, qnt:qnt, price:price},
+							success:function(){
+								//카트에서 상품삭제
+								$.ajax({
+									type:"get",
+									url:"/cart/delete",
+									data:{gid:gid},
+									success:function(){}
+								});
+							}
+						});
+					});
+					alert("주문이 완료되었습니다.");
+					location.href="/";
 				}	
 			});
 		}

@@ -1,4 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+	.phone, .address {
+		font-size:12px;
+	}
+</style>
 <div class="row my-5">
 	<div class="col">
 		<h1 class="text-center mb-5">회원목록</h1>
@@ -17,25 +22,33 @@
 			</form>
 		</div>
 		<hr>
-		<div id="div_user"></div>
+		<div id="div_user" class="row"></div>
 	</div>
 </div>
 <!-- 회원목록 템플릿 -->
 <script id="temp_user" type="x-handlebars-template">
 	{{#each .}}
-	<div class="card p-3 mb-3">
-		<div class="row">
-			<div class="col-2 col-md-2">
-				<img src="{{photo}}" width="90%">
-			</div>
-			<div class="col">
-				<div>{{uname}} ({{uid}})</div>
-				<div>{{address1}} {{address2}}</div>
-				<div>{{phone}}</div>
+	<div class="col-6 col-md-4 col-lg-2">
+		<div class="card mb-3 p-2">
+			<img src="{{photo photo}}" class="card-img-top">
+			<hr>
+			<div class="card-body">
+				<div><a href="/user/read?uid={{uid}}">{{uname}} ({{uid}})</a></div>
+				<div class="ellipsis address">{{address1}} {{address2}}</div>
+				<div class="ellipsis phone">{{phone}}</div>
 			</div>
 		</div>
 	</div>
 	{{/each}}
+</script>
+<script>
+	Handlebars.registerHelper("photo", function(photo){
+		if(!photo){
+			return "http://via.placeholder.com/100x100";
+		}else{
+			return photo;
+		}
+	});
 </script>
 <script>
 	let page=1;

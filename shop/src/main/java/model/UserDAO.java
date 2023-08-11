@@ -5,16 +5,16 @@ import java.util.*;
 
 public class UserDAO {
 	//회원목록
-	public ArrayList<UserVO> list(String key,String query,int page){
-		ArrayList<UserVO> array= new ArrayList<UserVO>();
+	public ArrayList<UserVO> list(String key, String query, int page){
+		ArrayList<UserVO> array=new ArrayList<UserVO>();
 		try {
-			String sql="select * from users where " + key + " like ? order by regDate desc limit ?,5";
+			String sql="select * from users where " + key + " like ? order by regDate desc limit ?,6";
 			PreparedStatement ps=Database.CON.prepareStatement(sql);
-			ps.setString(1, "%"+query+"%");
-			ps.setInt(2, (page-1)*5);
+			ps.setString(1, "%" + query + "%");
+			ps.setInt(2, (page-1)*6);
 			ResultSet rs=ps.executeQuery();
 			while(rs.next()) {
-				UserVO vo = new UserVO();
+				UserVO vo=new UserVO();
 				vo.setUid(rs.getString("uid"));
 				vo.setUpass(rs.getString("upass"));
 				vo.setUname(rs.getString("uname"));
@@ -31,23 +31,23 @@ public class UserDAO {
 		return array;
 	}
 	
-	
 	//회원수정
-		public void update(UserVO vo) {
-			try {
-				String sql="update users set uname=?,phone=?,address1=?,address2=?,photo=? where uid=?";
-				PreparedStatement ps=Database.CON.prepareStatement(sql);
-				ps.setString(6, vo.getUid());
-				ps.setString(1, vo.getUname());
-				ps.setString(2, vo.getPhone());
-				ps.setString(3, vo.getAddress1());
-				ps.setString(4, vo.getAddress2());
-				ps.setString(5, vo.getPhoto());
-				ps.execute();
-			}catch(Exception e) {
-				System.out.println("회원수정:" + e.toString());
-			}
+	public void update(UserVO vo) {
+		try {
+			String sql="update users set uname=?,phone=?,address1=?,address2=?,photo=? where uid=?";
+			PreparedStatement ps=Database.CON.prepareStatement(sql);
+			ps.setString(6, vo.getUid());
+			ps.setString(1, vo.getUname());
+			ps.setString(2, vo.getPhone());
+			ps.setString(3, vo.getAddress1());
+			ps.setString(4, vo.getAddress2());
+			ps.setString(5, vo.getPhoto());
+			ps.execute();
+		}catch(Exception e) {
+			System.out.println("회원수정:" + e.toString());
 		}
+	}
+		
 	//회원등록
 	public void insert(UserVO vo) {
 		try {
@@ -82,6 +82,7 @@ public class UserDAO {
 				vo.setAddress2(rs.getString("address2"));
 				vo.setRegDate(rs.getTimestamp("regDate"));
 				vo.setPhoto(rs.getString("photo"));
+				vo.setRole(rs.getInt("role"));
 			}
 		}catch(Exception e) {
 			System.out.println("회원정보읽기:" + e.toString());
