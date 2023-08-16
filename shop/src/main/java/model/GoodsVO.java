@@ -1,12 +1,20 @@
 package model;
 
-public class GoodsVO {
+public class GoodsVO extends CountVO{
 	private String gid;
 	private String title;
 	private int price;
 	private String image;
 	private String regDate;
 	private String maker;
+	private String content;
+	
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
 	public String getGid() {
 		return gid;
 	}

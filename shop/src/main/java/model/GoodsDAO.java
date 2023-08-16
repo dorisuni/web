@@ -9,13 +9,14 @@ public class GoodsDAO {
 	//상품정보 수정
 	public void update(GoodsVO vo) {
 		try {
-			String sql="update goods set title=?,price=?,maker=?,image=? where gid=?";
+			String sql="update goods set title=?,price=?,maker=?,image=?, content=? where gid=?";
 			PreparedStatement ps=Database.CON.prepareStatement(sql);
-			ps.setString(5, vo.getGid());
 			ps.setString(1, vo.getTitle());
 			ps.setInt(2, vo.getPrice());
 			ps.setString(3, vo.getMaker());
 			ps.setString(4, vo.getImage());
+			ps.setString(5, vo.getContent());
+			ps.setString(6, vo.getGid());
 			ps.execute();
 		}catch(Exception e) {
 			System.out.println("상품수정:" + e.toString());
@@ -37,6 +38,7 @@ public class GoodsDAO {
 				vo.setPrice(rs.getInt("price"));
 				vo.setMaker(rs.getString("maker"));
 				vo.setRegDate(sdf.format(rs.getTimestamp("regDate")));
+				vo.setContent(rs.getString("content"));
 			}
 		}catch(Exception e) {
 			System.out.println("상품정보:" + e.toString());
@@ -55,6 +57,7 @@ public class GoodsDAO {
 			System.out.println("상품삭제:" + e.toString());
 		}
 	}
+	
 	//상품검색수
 	public int total(String query) {
 		int total=0;
@@ -71,13 +74,15 @@ public class GoodsDAO {
 	}
 	
 	//상품목록
-	public ArrayList<GoodsVO> list(String query, int page){
+	public ArrayList<GoodsVO> list(String query, int page, String uid){
 		ArrayList<GoodsVO> array=new ArrayList<GoodsVO>();
 		try {
-			String sql="select * from goods where title like ? order by regDate desc limit ?,6";
+			String sql="select *, (select count(*) from favorite where uid=? and gid=g.gid) ucnt";
+			sql+=" from view_goods g where title like ? order by regDate desc limit ?,6";
 			PreparedStatement ps=Database.CON.prepareStatement(sql);
-			ps.setString(1, "%" + query + "%");
-			ps.setInt(2, (page-1)*6);
+			ps.setString(1, uid);
+			ps.setString(2, "%" + query + "%");
+			ps.setInt(3, (page-1)*6);
 			ResultSet rs=ps.executeQuery();
 			while(rs.next()) {
 				GoodsVO vo=new GoodsVO();
@@ -87,6 +92,9 @@ public class GoodsDAO {
 				vo.setPrice(rs.getInt("price"));
 				vo.setMaker(rs.getString("maker"));
 				vo.setRegDate(sdf.format(rs.getTimestamp("regDate")));
+				vo.setFcnt(rs.getInt("fcnt"));
+				vo.setRcnt(rs.getInt("rcnt"));
+				vo.setUcnt(rs.getInt("ucnt"));
 				array.add(vo);
 			}
 		}catch(Exception e) {

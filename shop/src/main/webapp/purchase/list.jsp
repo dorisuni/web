@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="row my-5">
 	<div class="col">
 		<h1 class="text-center mb-5">주문목록</h1>
@@ -18,13 +17,13 @@
 			</form>
 			<div class="col-md-4"></div>
 			<div class="col-md-4">
-				<select class="form-select status" id="sel-status">
-					<option value="0" >결제대기중</option>
-					<option value="1" >결제완료</option>
-					<option value="2" >배송준비중</option>
-					<option value="3" >배송중</option>
-					<option value="4" >배송완료</option>
-					<option value="" >모든구매</option>
+				<select class="form-select" id="sel-status">
+					<option value="0">결제대기중</option>
+					<option value="1">결제완료</option>
+					<option value="2">배송준비중</option>
+					<option value="3">배송중</option>
+					<option value="4">배송완료</option>
+					<option value="">모든구매</option>
 				</select>
 			</div>
 		</div>
@@ -33,19 +32,14 @@
 		<div id="pagination" class="pagination justify-content-center mt-3"></div>
 	</div>
 </div>
-
-
-
-
 <script id="temp_purchase" type="x-handlebars-template">
 	<table class="table">
 		{{#each .}}
 			<tr>
-				<td class="pid"><a href="/purchase/read?pid={{pid}}">{{pid}}</td>
-				<td>{{pid}}</td>
+				<td class="pid"><a href="/purchase/read?pid={{pid}}">{{pid}}</a></td>
 				<td>{{uname}} {{uid}}</td>
 				<td>{{address1}}</td>
-				<td>{{purDate}} {{status}}</td>
+				<td>{{purDate}}</td>
 				<td>
 					<select class="form-select status">
 						<option value="0" {{select status 0}}>결제대기중</option>
@@ -54,68 +48,63 @@
 						<option value="3" {{select status 3}}>배송중</option>
 						<option value="4" {{select status 4}}>배송완료</option>
 					</select>
-					<td><button class="btn btn-primary btn-sm btn-update">상태변경</button></td>	
 				</td>
+				<td><button class="btn btn-primary btn-sm btn-update">상태변경</button></td>
 			</tr>
 		{{/each}}
 	</table>
-
 </script>
-
 <script>
-	Handlebars.registerHelper("select",function(status,value){
+	Handlebars.registerHelper("select", function(status, value){
 		if(status==value) return "selected";
-	})
-
+	});
 </script>
-
 <script>
 	let page=1;
 	let query=$(frm.query).val();
 	let key=$(frm.key).val();
-	
-	//상태조회를 바꿨을 때
-	$("#sel-status").on("change",function(){
+
+	//상태조회를 바꿨을때
+	$("#sel-status").on("change", function(){
 		key="status";
 		query=$(this).val();
+		page=1;
 		getTotal();
 	});
-
-
-	//상태변경버튼을 누른경우
-	$("#div_purchase").on("click",".btn-update",function(){
+	
+	//상태변경 버튼을 클릭한경우
+	$("#div_purchase").on("click", ".btn-update", function(){
 		const tr=$(this).parent().parent();
-		const pid = tr.find(".pid").text();
-		const status = tr.find(".status").val();
-		// alert(pid + "........" + status);
-		if(confirm("상태를 변경하실래요?")){
+		const pid=tr.find(".pid").text();
+		const status=tr.find(".status").val();
+		//alert(pid + "........" + status);
+		if(confirm("상태를 변경하실래요?")) {
 			//상태변경
 			$.ajax({
 				type:"post",
 				url:"/purchase/update",
-				data:{pid:pid, status:status},
+				data:{pid, status},
 				success:function(){
 					alert("상태가 변경되었습니다.");
 					getTotal();
 				}
-			})
+			});
 		}
-	});
+	}); 
 	
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		query=$(frm.query).val();
 		key=$(frm.key).val();
+		page=1;
 		getTotal();
 	});
-
-	
 	
 	function getList(){
 		$.ajax({
 			type:"get",
 			url:"/purchase/list.json",
-			data:{page:page,key:key,query:query},
+			data:{page:page, key:key, query:query},
 			dataType:"json",
 			success:function(data){
 				const temp=Handlebars.compile($("#temp_purchase").html());
@@ -124,19 +113,19 @@
 		})
 	}
 	
-	getTotal();
 	//검색수
+	getTotal();
 	function getTotal(){
 		$.ajax({
 			type:"get",
 			url:"/purchase/total",
-			data:{key:key,query:query},
+			data:{key:key, query:query},
 			success:function(data){
 				if(data==0){
-					$("#div_purchase").html("<h3 class='text-center my-5'>상품이 존재하지 않습니다.</h3>");
+					$("#div_purchase").html("<h3 class='text-center my-5'>검색결과가 없습니다.</h3>");
 				}else{
 					const totalPages=Math.ceil(data/5);
-					$("#pagination").twbsPagination("changeTotalPages", totalPages, 1);
+					$("#pagination").twbsPagination("changeTotalPages", totalPages, page);
 				}
 				if(data > 5){
 					$("#pagination").show();
@@ -162,3 +151,19 @@
 	    }
 	});
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

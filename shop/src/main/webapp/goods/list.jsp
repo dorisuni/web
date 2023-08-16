@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <div class="row my-5">
 	<div class="col">
 		<h1 class="text-center mb-5">상품목록</h1>
@@ -74,14 +75,16 @@
 			url:"/goods/total",
 			data:{query:query},
 			success:function(data){
-				const totalPages=Math.ceil(data/6);
-				if(totalPages==0){
-					alert("검색내용이 존재하지않습니다.");
-					$(frm.query).val("");
-					query="";
-					getTotal();
+				if(data==0){
+					$("#div_goods").html("<h3 class='text-center my-5'>상품이 존재하지 않습니다.</h3>");
 				}else{
+					const totalPages=Math.ceil(data/6);
 					$("#pagination").twbsPagination("changeTotalPages", totalPages, 1);
+				}
+				if(data > 6){
+					$("#pagination").show();
+				}else{
+					$("#pagination").hide();
 				}
 			}
 		});
@@ -94,7 +97,6 @@
 			data:{page:page, query:query},
 			dataType:"json",
 			success:function(data){
-				console.log(data);
 				const temp=Handlebars.compile($("#temp_goods").html());
 				$("#div_goods").html(temp(data));
 			}
@@ -116,3 +118,5 @@
 	    }
 	});
 </script>
+
+

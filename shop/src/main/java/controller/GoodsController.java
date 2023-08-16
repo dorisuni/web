@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+
 import com.google.gson.Gson;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
@@ -26,7 +28,7 @@ import model.NaverAPI;
 
 @WebServlet(value={"/goods/search","/goods/search.json","/goods/append","/goods/list.json",
 		"/goods/total", "/goods/list", "/goods/delete", "/goods/insert", "/goods/update",
-		"/goods/read"})
+		"/goods/read", "/goods/ckupload"})
 public class GoodsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     GoodsDAO gdao=new GoodsDAO(); 
@@ -50,8 +52,9 @@ public class GoodsController extends HttpServlet {
 		case "/goods/list.json": //실행: /goods/list.json?page=1&query= 
 			page=Integer.parseInt(request.getParameter("page"));
 			query=request.getParameter("query");
+			String uid=request.getParameter("uid");
 			Gson gson=new Gson();
-			out.print(gson.toJson(gdao.list(query, page)));
+			out.print(gson.toJson(gdao.list(query, page, uid)));
 			break;
 		case "/goods/total":
 			query=request.getParameter("query");
@@ -80,8 +83,8 @@ public class GoodsController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path="/upload/goods/";
-		File mdPath=new File("c:" + path);
-		if(!mdPath.exists()) mdPath.mkdir();
+		File dirPath=new File("c:" + path);
+		if(!dirPath.exists()) dirPath.mkdir();
 		
 		switch(request.getServletPath()) {
 		case "/goods/append":
@@ -134,7 +137,7 @@ public class GoodsController extends HttpServlet {
 			vo.setTitle(multi.getParameter("title"));
 			vo.setMaker(multi.getParameter("maker"));
 			vo.setPrice(Integer.parseInt(multi.getParameter("price")));
-			System.out.println(vo.toString());
+			//System.out.println(vo.toString());
 			gdao.insert(vo);
 			response.sendRedirect("/goods/list");
 			break;
@@ -149,10 +152,39 @@ public class GoodsController extends HttpServlet {
 			vo.setTitle(multi.getParameter("title"));
 			vo.setMaker(multi.getParameter("maker"));
 			vo.setPrice(Integer.parseInt(multi.getParameter("price")));
+			vo.setContent(multi.getParameter("content"));
+			System.out.println(vo.toString());
 			gdao.update(vo);
 			response.sendRedirect("/goods/list");
+			break;
+		case "/goods/ckupload":
+			try {
+				gid=request.getParameter("gid");
+				String pathCK ="/upload/goods/ck/" + gid + "/";
+				File dirPathCK = new File("c:" + pathCK);
+				if(!dirPathCK.exists()) dirPathCK.mkdir();
+				
+	            multi = new MultipartRequest(request,"c:" + pathCK, 1024 * 1024 * 10,"UTF-8",new DefaultFileRenamePolicy());
+	            String fileName=multi.getFilesystemName("upload");
+	            String fileUrl=pathCK + fileName;
+	
+	            JSONObject json = new JSONObject();
+	            json.put("uploaded", 1);
+	            json.put("fileName", fileName);
+	            json.put("url", fileUrl);
+	            PrintWriter out=response.getWriter();
+	            out.println(json);
+			}catch(Exception e) {
+				System.out.println("ck 업로드:" + e.toString());
+			}
 			break;
 		}
 	}
 
 }
+
+
+
+
+
+

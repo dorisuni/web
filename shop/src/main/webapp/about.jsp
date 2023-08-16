@@ -3,6 +3,16 @@
 	.title, .price {
 		font-size:12px;
 	}
+	 .bi-suit-heart, .bi-suit-heart-fill{
+		color: red;
+	}
+
+	.bi {
+		font-size:0.7rem;
+	}
+	.rcnt, .fcnt {
+		font-size:0.5rem;
+	}
 </style>    
 <div class="row my-5">
 	<div class="col">
@@ -24,10 +34,18 @@
 <script id="temp_goods" type="x-handlebars/template">
 	{{#each .}}
 		<div class="col-6 col-md-4 col-lg-2 mb-3">
-			<div class="card p-3">
-				<img src="{{image}}" gid="{{gid}}" style="cursor:pointer;">
-				<div class="ellipsis title mt-2">{{title}}</div>
-				<div class="price">{{fmtPrice price}}</div>
+			<div class="card">
+				<div class="card-body">
+					<img src="{{image}}" gid="{{gid}}" style="cursor:pointer;" width="90%">
+					<div class="ellipsis title mt-2">{{title}}</div>
+					<div class="price">{{fmtPrice price}}</div>
+				</div>
+				<div class="card-footer text-end">
+					<i id="heart" class="bi {{ucnt ucnt}}"></i>
+					<span class="fcnt">{{fcnt}}</span>
+					<i class="bi bi-chat-left-text ms-2"></i>
+					<span class="rcnt">{{rcnt}}</span>
+				</div>
 			</div>
 		</div>
 	{{/each}}
@@ -36,10 +54,16 @@
 	Handlebars.registerHelper("fmtPrice", function(price){
 		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
 	});
+	
+	Handlebars.registerHelper("ucnt", function(ucnt){
+		if(ucnt==0) return "bi-suit-heart";
+		else return "bi-suit-heart-fill";
+	});
 </script>
 <script>
 	let page=1;
 	let query="";
+	const uid="${user.uid}";
 	
 	$("#div_goods").on("click", "img", function(){
 		const gid=$(this).attr("gid");
@@ -49,6 +73,7 @@
 	$(frm).on("submit", function(e){
 		e.preventDefault();
 		query=$(frm.query).val();
+		page=1;
 		getTotal();
 	});
 	
@@ -59,14 +84,13 @@
 			url:"/goods/total",
 			data:{query:query},
 			success:function(data){
-				const totalPages=Math.ceil(data/6);
-				if(totalPages==0){
-					alert("검색내용이 존재하지않습니다.");
-					$(frm.query).val("");
-					query="";
-					getTotal();
-				}else{
-					$("#pagination").twbsPagination("changeTotalPages", totalPages, 1);
+				$("#pagination").hide();
+				if(data==0){
+					$("#div_goods").html("<h3 class='text-center my-5'>상품이 존재하지않습니다.</h3>")
+				}else if(data>6) {
+					const totalPages=Math.ceil(data/6);
+					$("#pagination").twbsPagination("changeTotalPages", totalPages, page);
+					$("#pagination").show();
 				}
 			}
 		});
@@ -76,7 +100,7 @@
 		$.ajax({
 			type:"get",
 			url:"/goods/list.json",
-			data:{page:page, query:query},
+			data:{page:page, query:query, uid:uid},
 			dataType:"json",
 			success:function(data){
 				console.log(data);
@@ -95,8 +119,8 @@
 	    prev : '<',	// 이전 페이지 버튼에 쓰여있는 텍스트
 	    next : '>',	// 다음 페이지 버튼에 쓰여있는 텍스트
 	    last : '>>',	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
-	    onPageClick: function (event, curPage) {
-	    	page=curPage;
+	    onPageClick: function (event, clickPage) {
+	    	page=clickPage;
 	    	getList();
 	    }
 	});

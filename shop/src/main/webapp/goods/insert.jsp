@@ -60,3 +60,11 @@
 		$("#image").attr("src", "http://via.placeholder.com/100x50");
 	})
 </script>
+
+
+
+
+
+
+
+

@@ -13,12 +13,11 @@ public class UserVO {
 	private String photo;
 	private int role;
 	
-	public void setRole(int role) {
-		this.role = role;
-	}
-	
 	public int getRole() {
 		return role;
+	}
+	public void setRole(int role) {
+		this.role = role;
 	}
 	public String getUid() {
 		return uid;
